@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-Br">
+<head>
+    <meta charset="utf-8">
+    <title>Scoreboarding</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="index.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+</head>
+<body>
+    <header class="jumbotron text-center">
+        <h1>Scoreboarding</h1>
+    </header>
+
+    <div class="row mx-5">
+        <aside class="col-4">
+            <p><a href="ajuda.html" target="_blank"><button type="button" name="ajuda" id="ajuda">?</button></a></p>
+            <p>
+                Lista de exemplos:<br />
+                <select size="1" name="exemploSelect" id="exemploSelect">
+                    <option value="00">---</option>
+                    <option value="01">Exemplo 01</option>
+                    <option value="02">Exemplo 02</option>
+                    <option value="03">Exemplo 03</option>
+                    <option value="04">Exemplo 04</option>
+                    <option value="05">Exemplo 05</option>
+                    <option value="06">Exemplo 06</option>
+                </select>
+                <button type="submit" name="carregaExemplo" id="carregaExemplo">Carregar</button>
+            </p>
+            <p>
+                Número de instruções:<br />
+                <input type="number" name="nInst" id="nInst" value="1" min="1" maxlength />
+                <button type="submit" name="confirmarNInst" id="confirmarNInst">Confirmar</button>
+            </p>
+
+            <p>Lista de instruções:</p>
+            <div id = "listaInstrucoes"></div>
+
+            <p>Ciclos por instrução:</p>
+                <p>
+                    <td>Inteiro</td>
+                    <td><input type="number" min="1" value="1" name="ciclosInt" id="ciclosInt" /></td>
+                </p>
+                <p>
+                    <td>FP Add</td>
+                    <td><input type="number" min="1" value="1" name="ciclosFPAdd" id="ciclosFPAdd" /></td>
+                </p>
+                <p>
+                    <td>FP Mult</td>
+                    <td><input type="number" min="1" value="1" name="ciclosFPMul" id="ciclosFPMul" /></td>
+                </p>
+                <p>
+                    <td>FP Div</td>
+                    <td><input type="number" min="1" value="1" name="ciclosFPDiv" id="ciclosFPDiv" /></td>
+                </p>
+                <p>Quantidade FU's de Memória</p>
+                <p>
+                    <td>Load</td>
+                    <td><input type="number" min="1" value="1" name="fuLoad" id="fuLoad" /></td>
+                </p>
+                <p>
+                    <td>Store</td>
+                    <td><input type="number" min="1" value="1" name="fuStore" id="fuStore" /></td>
+                </p>
+                <p>Quantidade FU's</p>
+                <p>
+                    <td>Inteiro</td>
+                    <td><input type="number" min="1" value="1" name="fuInt" id="fuInt" /></td>
+                </p>
+                <p>
+                    <td>FP Add</td>
+                    <td><input type="number" min="1" value="1" name="fuFPAdd" id="fuFPAdd" /></td>
+                </p>
+                <p>
+                    <td>FP Mult</td>
+                    <td><input type="number" min="1" value="2" name="fuFPMul" id="fuFPMul" /></td>
+                </p>
+                <p>
+                    <td>FP Div</td>
+                    <td><input type="number" min="1" value="1" name="fuFPDiv" id="fuFPDiv" /></td>
+                </p>
+
+                <br />
+                <button type="submit" id="enviar">Enviar</button>
+                <button type="reset" id="limpar">Limpar</button>
+        </aside>
+
+        <main class="col">
+            <div>
+                <button type="button" id="proximo">Proximo</button>
+                <button type="button" id="resultado">Resultado</button>
+            </div>
+
+            <div id="clock"></div>
+            <div id="estadoInst"></div>
+            <div id="estadoMemUF"></div>
+            <div id="estadoUF"></div>
+            <div id="estadoMem"></div>
+        </main>
+    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="tomasulo.js"></script>
+</body>
+</html>
