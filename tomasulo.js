@@ -1,4 +1,5 @@
-// scoreboarding.js
+//tomasulo.js
+import Estado from "./estado.js"
 
 
 function getConfig() {
@@ -77,7 +78,7 @@ function alertValidaInstrucao(instrucao) {
 }
 
 function numeroEhInteiro(numero) {
-    valor = parseInt(numero);
+    var valor = parseInt(numero);
     if (valor != numero){
         return false;
     }
@@ -86,7 +87,7 @@ function numeroEhInteiro(numero) {
 
 function registradorInvalidoR(registrador) {
 	 return (registrador[0] != 'R' || registrador.replace("R", "") == "" || isNaN(registrador.replace("R", "")))
-            || !numeroEhInteiro(registrador.replace("R", ""));
+            || !(numeroEhInteiro(registrador.replace("R", "")));
 }
 
 function registradorInvalidoF(registrador) {
@@ -225,358 +226,37 @@ function ehRegistrador(item) {
 
 
 function inicializaDiagrama(CONFIG, insts) {
-    var diagrama = {};
-    diagrama["config"] = {
-        "nInst": CONFIG["nInst"],
-        "ciclos": CONFIG["ciclos"],
-        "unidades": CONFIG["unidades"]
-    };
-    //tabela que a gente realmente se importa
-    var tabela = [];
-    for(i = 0; i < CONFIG["nInst"]; i++) {
-        var linha = {}
-        linha["instrucao"] = insts[i];
-        linha["n"] = i;
-        linha["r"] = insts[i]["r"];
-        linha["s"] = insts[i]["s"];
-        linha["t"] = insts[i]["t"];
-        linha["d"] = insts[i]["d"];
-        linha["is"] = null;     //issue
-        linha["ro"] = null;     //leitura de operadores
-        linha["ec"] = null;     //exec. completa
-        linha["wr"] = null;     //escrita do resultado
-        tabela[i] = linha;
-    }
-
-    diagrama["tabela"] = tabela;
-    //Unidades funcionais
-    var ufs = {};
-    for(var tipoUnidade in CONFIG["unidades"]) {
-        for(i = 0; i < CONFIG["unidades"][tipoUnidade]; i++) {
-            uf = {};
-            uf["instrucao"] = null;
-            uf["tipo"] = tipoUnidade;
-            uf["tempo"] = null;
-            uf["nome"] = tipoUnidade + (i + 1);
-            uf["ocupado"] = false;
-            uf["operacao"] = null;
-            uf["vi"] = null;        //nao lembro dessas bagaca, apenas copiei
-            uf["vj"] = null;
-            uf["vk"] = null;
-            uf["qi"] = null;        //usado somente no SD, BEQ e BNEZ
-            uf["qj"] = null;
-            uf["qk"] = null;
-            uf["rj"] = false;
-            uf["rk"] = false;
-            uf["escrevendo"] = false; //usado para saber se falta terminar a escrita
-            ufs[uf["nome"]] = uf;
-        }
-    }
-
-    var ufsMem = {};
-    for(var tipoUnidade in CONFIG["unidadesMem"]) {
-        for(i = 0; i < CONFIG["unidadesMem"][tipoUnidade]; i++) {
-            ufMem = {};
-            ufMem["instrucao"] = null;
-            ufMem["tipo"] = tipoUnidade;
-            ufMem["tempo"] = null;
-            ufMem["nome"] = tipoUnidade + (i + 1);
-            ufMem["ocupado"] = false;
-            ufMem["operacao"] = null;
-            ufMem["endereco"] = null;
-            ufMem["destino"] = null;
-            ufsMem[ufMem["nome"]] = ufMem;
-        }
-    }
-
-    diagrama["uf"] = ufs;
-    diagrama["ufMem"] = ufsMem;
-
-    diagrama["clock"] = 0;
-
-    //os registradores de destino que ficam la embaixo
-    destinos = {};
-    for(i = 0; i < 32; i += 2) {
-        destinos["F" + i] = null;
-    }
-    diagrama["destino"] = destinos;
-
-    return diagrama;
 
 }
 
 function decrementaUnidadeFuncional(diagrama) {
-    unidades = diagrama["uf"];
-    for(key in unidades) {
-        unidade = unidades[key];
-        if(unidade["ocupado"] && !unidade["escrevendo"]) {
-            linha = unidade["instrucao"]["indice"];
-            if(diagrama["tabela"][linha]["ro"]) {
-                if(unidade["tempo"]) {
-                    unidade["tempo"]--;
-                }
-                if(unidade["tempo"] <= 0 && !unidade["travou"]) {
-                    instrucao = unidade["instrucao"];
-                    diagrama["tabela"][instrucao["indice"]]["ec"] = diagrama["clock"];
-                    unidade["travou"] = true;
-                }
-            }
-        }
-    }
-}
-
-function primeiraInstrucaoComDestino(unidade, unidades) {
-    for(j in unidades) {
-        var unidadeAux = unidades[j];
-        if(unidadeAux["ocupado"]) {
-            if(unidade["vi"] == unidadeAux["vi"]) {
-                if(unidadeAux["instrucao"]["indice"] < unidade["instrucao"]["indice"]) {
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
+    
 }
 
 function ninguemTemQueLerAntes(unidade, unidades, diagrama) {
-    for(j in unidades) {
-        var unidadeAux = unidades[j];
-        if(unidadeAux["ocupado"]) {
-            linha = diagrama["tabela"][unidadeAux["instrucao"]["indice"]];
-            if(unidadeAux["instrucao"]["indice"] < unidade["instrucao"]["indice"]  && !(linha["ro"])) {
-                if(temEscrita(unidade["instrucao"]["d"])) {
-                    if((unidade["vi"] == unidadeAux["vj"]) || (unidade["vi"] == unidadeAux["vk"])) {
-                        return false;
-                    }
-                } else {
-                    if(unidadeAux["instrucao"]["d"] == "BEQ") {
-                        if(unidade["vi"] == undidadeAux["vj"]) {
-                            return false;
-                        }
-                    }
-                    if(unidadeAux["instrucao"]["d"] == "SD" || unidadeAux["instrucao"]["d"] == "BNEZ") {
-                        if(unidade["vi"] == unidadeAux["instrucao"]["r"]) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return true;
+    
 }
 
 function atualizaUnidades(unidade, unidades) {
-    for(key in unidades) {
-        unidadeAux = unidades[key];
-        if(temEscrita(unidade["operacao"])) {
-            if(temEscrita(unidadeAux["operacao"])) {
-                if(unidade["vi"] == unidadeAux["vj"]) {
-                    unidadeAux["qj"] = null;
-                    unidadeAux["rj"] = "sim";
-                }
-                if(unidade["vi"] == unidadeAux["vk"]) {
-                    unidadeAux["qk"] = null;
-                    unidadeAux["rk"] = "sim";
-                }
-            } else {
-                if(unidadeAux["instrucao"]["d"] == "SD") {
-                    if(unidade["vi"] == unidadeAux["vk"]) {
-                        unidadeAux["qk"] = null;
-                        unidadeAux["rk"] = "sim";
-                    }
-                }
-
-                if(unidadeAux["instrucao"]["d"] == "BEQ") {
-                    if(unidade["vi"] == unidadeAux["vj"]) {
-                        unidadeAux["qj"] = null;
-                        unidadeAux["rj"] = "sim";
-                    }
-                }
-                if(unidade["vi"] == unidadeAux["instrucao"]["r"]) {
-                    unidadeAux["qi"] = null;
-                }
-            }
-        }
-    }
+    
 }
 
 
 function escreveDestino(diagrama) {
-    var unidades = diagrama["uf"];
-    for(i in unidades) {
-        var unidade = unidades[i];
-        if(unidade["ocupado"] && !unidade["escrevendo"]) {
-            var linha = diagrama["tabela"][unidade["instrucao"]["indice"]];
-            if(!temEscrita(unidade["instrucao"]["d"]) && linha["ec"]) {
-                linha["wr"] = diagrama["clock"];
-                unidade["tempo"] = null;
-                unidade["ocupado"] = false;
-                unidade["escrevendo"] = true;
-                return;
-            }
-            if(primeiraInstrucaoComDestino(unidade, unidades) && ninguemTemQueLerAntes(unidade, unidades, diagrama) && linha["ec"]) {
-                linha["wr"] = diagrama["clock"];
-                unidade["tempo"] = null;
-                unidade["ocupado"] = false;
-                unidade["escrevendo"] = true;
-            }
-        }
-    }
 
 }
 
 function leOperandos(diagrama) {
-    for(key in unidades) {
-        unidade = unidades[key];
-        if(unidade["ocupado"] && !unidade["escrevendo"]) {
-            if(temEscrita(unidade["instrucao"]["d"])) {
-                if(!unidade["qj"] && !unidade["qk"]) {
-                    linha = unidade["instrucao"]["indice"];
-                    if(!diagrama["tabela"][linha]["ro"]) {
-                        diagrama["tabela"][linha]["ro"] = diagrama["clock"];
-                    }
-                }
-            } else {
-                if(!unidade["qi"]) {
-                    linha = unidade["instrucao"]["indice"];
-                    if(!diagrama["tabela"][linha]["ro"]) {
-                        comando = unidade["instrucao"]["d"];
-                        if(comando == "BNEZ") {
-                            diagrama["tabela"][linha]["ro"] = diagrama["clock"];
-                            return;
-                        }
-                        if(comando == "SD") {
-                            if(!unidade["qk"]) {
-                                diagrama["tabela"][linha]["ro"] = diagrama["clock"];
-                                return;
-                            }
-                        }
-                        if(comando == "BEQ") {
-                            if(!unidade["qj"]) {
-                                diagrama["tabela"][linha]["ro"] = diagrama["clock"];
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
 }
 
 
 function avancaCiclo(diagrama) {
-    ++diagrama["clock"];
-
-    escreveDestino(diagrama);
-    decrementaUnidadeFuncional(diagrama);
-    leOperandos(diagrama);
-    despachaInst(diagrama);
-
-    atualizaClock(diagrama["clock"]);
-    atualizaTabelaEstadoInstrucaoHTML(diagrama["tabela"]);
-    atualizaTabelaEstadoUFHTML(diagrama["uf"]);
-    atualizaTabelaEstadoMenHTML(diagrama["destino"]);
-
-    var achou = false;
-    for(i in diagrama["tabela"]) {
-        if(!diagrama["tabela"][i]["wr"]) {
-            achou = true;
-        }
-    }
-
-    return (!achou);
+    
 }
 
 function despachaInst(diagrama) {
-    // Acha a primeira instrução não despachada
-    var pos = -1;
-    var achou = false
-    for (var i = 0 ; (!achou && i < diagrama["config"]["nInst"]); ++i) {
-        if(!diagrama["tabela"][i]["is"]) {
-            achou = true;
-            pos = i;
-        }
-    }
-    if(pos === -1) {
-        resetaEscritas(diagrama);
-        return;
-    }
-    // Verificar se a unidade funcional está livre
-    var tipoUF = getUnidadeInstrucao(diagrama["tabela"][pos]["d"]);
-    console.log(`O tipo da UF: ${tipoUF}`);
 
-    var nomeUF = null;
-    achou = false;
-    unidadesEscrevendo = {};
-    for (var i = 1; (!achou && i <= diagrama["config"]["unidades"][tipoUF]); i++) {
-        var nome = `${tipoUF}${i}`;
-        ocp = diagrama["uf"][nome]["ocupado"];
-        if(!ocp) {
-            if(!diagrama["uf"][nome]["escrevendo"]) {
-                achou = true;
-                nomeUF = nome;
-            }
-        }
-    }
-
-    // Despacha a instrucao
-    var inst = diagrama["tabela"][pos];
-    var escreve = temEscrita(inst["d"]);
-    var mem = diagrama["destino"][inst["r"]];
-    if(nomeUF && (!mem || !escreve)) {
-        console.log(`Despachando instrução ${pos}`);
-        console.log(`UF livre: ${nomeUF}`);
-        var uf = diagrama["uf"][nomeUF];
-        uf["instrucao"] = inst["instrucao"];
-        inst["is"] = diagrama["clock"];
-        uf["tempo"] = diagrama["config"]["ciclos"][uf["tipo"]];
-        uf["ocupado"] = true;
-        uf["operacao"] = inst["d"];
-        if(escreve) {
-            uf["vi"] = ehRegistrador(inst["r"]) ? inst["r"] : null;
-        }
-        uf["vj"] = ehRegistrador(inst["s"]) ? inst["s"] : null;
-        uf["vk"] = ehRegistrador(inst["t"]) ? inst["t"] : null;
-
-        if(diagrama["destino"][inst["r"]] && !escreve) {
-            uf["qi"] = diagrama["destino"][inst["r"]];
-        }
-        if(diagrama["destino"][inst["s"]] ) {
-            uf["qj"] = diagrama["destino"][inst["s"]];
-            uf["rj"] = "não";
-        } else {
-            if(uf["vj"]) {
-                uf["rj"] = "sim";
-            }
-        }
-        if(diagrama["destino"][inst["t"]]) {
-            uf["qk"] = diagrama["destino"][inst["t"]];
-            uf["rk"] = "não";
-        } else {
-            if(uf["vk"]) {
-                uf["rk"] = "sim";
-            }
-        }
-        if(escreve) {
-            diagrama["destino"][inst["r"]] = nomeUF;
-        }
-
-    } else {
-        //for(key in diagrama["uf"]) {
-            //unidade = diagrama["uf"][key]
-            //if(unidade["escrevendo"] && unidade["travou"]) {
-                //diagrama["destino"][unidade["vi"]] = null;
-                //unidade["travou"] = false;
-                //unidade["escrevendo"] = false;
-            //}
-        //}
-        console.log(`Unidades ocupadas, não despachando a instrução`);
-    }
-    resetaEscritas(diagrama);
 }
 
 function resetaEscritas(diagrama) {
@@ -638,8 +318,6 @@ function atualizaTabelaEstadoUFHTML(ufs) {
         $(`#${uf["nome"]}_vk`).text(uf["vk"] ? uf["vk"] : "");
         $(`#${uf["nome"]}_qj`).text(((uf["qj"]) && (uf["qj"] !== 1)) ? uf["qj"] : "");
         $(`#${uf["nome"]}_qk`).text(((uf["qk"]) && (uf["qk"] !== 1)) ? uf["qk"] : "");
-        $(`#${uf["nome"]}_rj`).text(uf["rj"] ? uf["rj"] : "");
-        $(`#${uf["nome"]}_rk`).text(uf["rk"] ? uf["rk"] : "");
     }
 }
 
@@ -663,11 +341,11 @@ function gerarTabelaEstadoInstrucaoHTML(diagrama) {
         + "<th>k</th><th>Issue</th><th>Exec.<br>Completa</th><th>Write</th></tr>"
     );
 
-    for (var i = 0 ; i < diagrama["config"]["nInst"]; ++i) {
-        inst = diagrama["tabela"][i];
+    for (let i = 0 ; i < diagrama.configuracao["numInstrucoes"]; ++i) {
+        let instrucao = diagrama.estadoInstrucoes[i].instrucao;
         s += (
-            `<tr> <td>I${i}</td> <td>${inst["d"]}</td>
-            <td>${inst["r"]}</td> <td>${inst["s"]}</td> <td>${inst["t"]}</td>
+            `<tr> <td>I${i}</td> <td>${instrucao["operacao"]}</td>
+            <td>${instrucao["registradorR"]}</td> <td>${instrucao["registradorS"]}</td> <td>${instrucao["registradorT"]}</td>
             <td id='i${i}_is'></td></td> <td id='i${i}_ec'></td>
             <td id='i${i}_wr'></td> </tr>`
         );
@@ -683,8 +361,10 @@ function gerarTabelaEstadoUFHTML(diagrama) {
         + "<th>Op</th> <th>Vi</th> <th>Vj</th> <th>Vk</th> <th>Qj</th> <th>Qk</th>"
     );
 
-    for(key in diagrama["uf"]) {
-        var uf = diagrama["uf"][key];
+    console.log(diagrama.unidadesFuncionais);
+    let unidadesFuncionais = diagrama.unidadesFuncionais;
+    for(let key in unidadesFuncionais) {
+        var uf = unidadesFuncionais[key];
 
         s += `<tr><td id="${uf["nome"]}_tempo"></td>
              <td>${uf["nome"]}</td> <td id="${uf["nome"]}_ocupado"></td>
@@ -715,6 +395,35 @@ function gerarTabelaEstadoMenHTML(diagrama) {
 
     s += "</table>"
     $("#estadoMem").html(s);
+}
+
+function gerarTabelaEstadoUFMem(diagrama) {
+    var s = (
+        "<h3>Estado das Instruções de Memória </h3><table class='result'>"
+        + "<tr><th>Tempo</th><th>Instrução</th><th>Ocupado</th><th>Endereço</th>"
+        + "<th>Destino</th>"
+    );
+    for(let key in diagrama.unidadesFuncionaisMemoria) {
+        var ufMem = diagrama.unidadesFuncionaisMemoria[key];
+
+        s += `<tr><td id="${ufMem["nome"]}_tempo"></td>
+             <td>${ufMem["nome"]}</td> <td id="${ufMem["nome"]}_ocupado"></td>
+             <td id="${ufMem["nome"]}_endereco"></td><td id="${ufMem["nome"]}_destino"></td>
+             `
+    }
+    s += "</table>"
+    $("#estadoMemUF").html(s);
+}
+
+function atualizaTabelaEstadoUFMemHTML(ufsMem) {
+    for(i in ufsMem) {
+        var ufMem = ufsMem[i];
+        $(`#${ufMem["nome"]}_tempo`).text((ufMem["tempo"] !== null) ? ufMem["tempo"] : "");
+        $(`#${ufMem["nome"]}_ocupado`).text((ufMem["ocupado"]) ? "sim" : "não");
+        $(`#${ufMem["nome"]}_operacao`).text(ufMem["operacao"] ? ufMem["operacao"] : "");
+        $(`#${ufMem["nome"]}_endereco`).text(ufMem["endereco"] ? ufMem["endereco"] : "");
+        $(`#${ufMem["nome"]}_destino`).text(ufMem["destino"] ? ufMem["destino"] : "");
+    }
 }
 
 function geraTabelaParaInserirInstrucoes(nInst) {
@@ -750,7 +459,6 @@ function geraTabelaParaInserirInstrucoes(nInst) {
         $("#listaInstrucoes").html(tabela);
 }
 
-
 // -----------------------------------------------------------------------------
 
 function carregaExemplo() {
@@ -763,7 +471,7 @@ function carregaExemplo() {
       alert("Não foi possivel carregar o exemplo.")
     }).done(function(data) {
         $("#nInst").val(data["insts"].length);
-        confirmou = confirmarNInst();
+        var confirmou = confirmarNInst();
 
         for (var i = 0; i < data["insts"].length; i++) {
            $(`#D${i}`).val(data["insts"][i]["D"]);
@@ -861,7 +569,7 @@ $(document).ready(function() {
         if(!insts) {
             return;
         }
-        diagrama = inicializaDiagrama(CONFIG, insts);
+        diagrama = new Estado(CONFIG, insts);
         gerarTabelaEstadoInstrucaoHTML(diagrama);
         atualizaTabelaEstadoInstrucaoHTML(diagrama["tabela"])
         gerarTabelaEstadoUFHTML(diagrama);
@@ -895,36 +603,3 @@ $(document).ready(function() {
         }
     });
 });
-
-// ---------------------------------------------
-// NOVAS FUNCS
-// ---------------------------------------------
-
-function gerarTabelaEstadoUFMem(diagrama) {
-    var s = (
-        "<h3>Estado das Instruções de Memória </h3><table class='result'>"
-        + "<tr><th>Tempo</th><th>Instrução</th><th>Ocupado</th><th>Endereço</th>"
-        + "<th>Destino</th>"
-    );
-    for(key in diagrama["ufMem"]) {
-        var ufMem = diagrama["ufMem"][key];
-
-        s += `<tr><td id="${ufMem["nome"]}_tempo"></td>
-             <td>${ufMem["nome"]}</td> <td id="${ufMem["nome"]}_ocupado"></td>
-             <td id="${ufMem["nome"]}_endereco"></td><td id="${ufMem["nome"]}_destino"></td>
-             `
-    }
-    s += "</table>"
-    $("#estadoMemUF").html(s);
-}
-
-function atualizaTabelaEstadoUFMemHTML(ufsMem) {
-    for(i in ufsMem) {
-        var ufMem = ufsMem[i];
-        $(`#${ufMem["nome"]}_tempo`).text((ufMem["tempo"] !== null) ? ufMem["tempo"] : "");
-        $(`#${ufMem["nome"]}_ocupado`).text((ufMem["ocupado"]) ? "sim" : "não");
-        $(`#${ufMem["nome"]}_operacao`).text(ufMem["operacao"] ? ufMem["operacao"] : "");
-        $(`#${ufMem["nome"]}_endereco`).text(ufMem["endereco"] ? ufMem["endereco"] : "");
-        $(`#${ufMem["nome"]}_destino`).text(ufMem["destino"] ? ufMem["destino"] : "");
-    }
-}
