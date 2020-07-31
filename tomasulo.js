@@ -16,13 +16,12 @@ function getConfig() {
     ciclos["Integer"] = $("#ciclosInt").val();
     ciclos["Add"] = $("#ciclosFPAdd").val();
     ciclos["Mult"] = $("#ciclosFPMul").val();
-    ciclos["Div"] = $("#ciclosFPDiv").val();
-    ciclos["Load"] = ciclos["Integer"];
-    ciclos["Store"] = ciclos["Integer"];
+    ciclos["Load"] = $("#ciclosInt").val();
+    ciclos["Store"] = $("#ciclosInt").val();
 
 
     if ((ciclos["Integer"] < 1) || (ciclos["Add"] < 1) ||
-        (ciclos["Mult"] < 1) || (ciclos["Div"] < 1)) {
+        (ciclos["Mult"] < 1) || (ciclos["Load"] < 1)  || (ciclos["Store"] < 1)) {
         alert("A quantidade de ciclos por instrução, para todas as unidades, deve ser de no mínimo 1 ciclo!");
         return null;
     }
@@ -33,10 +32,9 @@ function getConfig() {
     unidades["Integer"] = $("#fuInt").val();
     unidades["Add"] = $("#fuFPAdd").val();
     unidades["Mult"] = $("#fuFPMul").val();
-    unidades["Div"] = $("#fuFPDiv").val();
     
     if ((unidades["Integer"] < 1) || (unidades["Add"] < 1) ||
-    (unidades["Mult"] < 1) || (unidades["Div"] < 1)) {
+    (unidades["Mult"] < 1)) {
         alert("A quantidade de unidades funcionais deve ser no mínimo 1!");
         return;
     }
