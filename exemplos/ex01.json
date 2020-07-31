@@ -2,17 +2,18 @@
     "config": {
         "ciclos": {
             "ciclosInt": 1,
+            "ciclosLoad": 2,
+            "ciclosStore": 2,
             "ciclosFPAdd": 2,
             "ciclosFPMul": 10,
             "ciclosFPDiv": 40
         },
         "unidades": {
-            "fuLoad": 2,
-            "fuStore": 1,
-            "fuInt": 1,
-            "fuFPAdd": 1,
-            "fuFPMul": 2,
-            "fuFPDiv": 1
+            "fuLoad": 6,
+            "fuStore": 3,
+            "fuInt": 3,
+            "fuFPAdd": 3,
+            "fuFPMul": 2
         }
     },
     "insts": [
