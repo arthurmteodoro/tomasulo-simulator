@@ -16,11 +16,12 @@ function getConfig() {
     ciclos["Integer"] = $("#ciclosInt").val();
     ciclos["Add"] = $("#ciclosFPAdd").val();
     ciclos["Mult"] = $("#ciclosFPMul").val();
-    ciclos["Load"] = $("#ciclosInt").val();
-    ciclos["Store"] = $("#ciclosInt").val();
+    ciclos["Div"] = $("#ciclosFPDiv").val();
+    ciclos["Load"] = $("#ciclosLoad").val();
+    ciclos["Store"] = $("#ciclosStore").val();
 
 
-    if ((ciclos["Integer"] < 1) || (ciclos["Add"] < 1) ||
+    if ((ciclos["Integer"] < 1) || (ciclos["Add"] < 1) || (ciclos["Div"] < 1) ||
         (ciclos["Mult"] < 1) || (ciclos["Load"] < 1)  || (ciclos["Store"] < 1)) {
         alert("A quantidade de ciclos por instrução, para todas as unidades, deve ser de no mínimo 1 ciclo!");
         return null;
@@ -68,7 +69,7 @@ function getInst(i) {
 
 //Alerta padrão para entradas inválidas das instruções
 function alertValidaInstrucao(instrucao) {
-    saida = "A instrução \n";
+    let saida = "A instrução \n";
     saida += instrucao["d"] + " " + instrucao["r"] + ", ";
     saida += instrucao["s"] + ", " + instrucao["t"];
     saida += " não atende os paramêtros do comando " + instrucao["d"];
@@ -101,7 +102,7 @@ function validaInstrucao(instrucao) {
         return false;
     }
 
-    if(unidade == "Mem") {
+    if(unidade == "Load" || unidade == "Store") {
         var comando = instrucao["d"]
 
         if(comando == "LD" || comando == "SD") {
@@ -171,25 +172,29 @@ function getAllInst(nInst) {
 function getUnidadeInstrucao(instrucao) {
     switch (instrucao) {
         case "ADD":
+            return "Integer";
         case "DADDUI":
+            return "Integer";
         case "BEQ":
+            return "Integer";
         case "BNEZ":
-            return "Integer"
+            return "Integer";
 
         case "SD":
+            return 'Store';
         case "LD":
-            return "Mem"
+            return "Load";
         
 
         case "SUBD":
+            return "Add";
         case "ADDD":
-            return "Add"
+            return "Add";
 
         case "MULTD":
-            return "Mult"
-
+            return "Mult";
         case "DIVD":
-            return "Div"
+            return "Mult";
 
         default:
             return null
@@ -589,6 +594,7 @@ $(document).ready(function() {
             return;
         }
         terminou = avancaCiclo(diagrama);
+        diagrama.executa_ciclo();
 
     });
     $("#resultado").click(function() {
