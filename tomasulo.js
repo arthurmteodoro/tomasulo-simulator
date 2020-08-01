@@ -301,18 +301,17 @@ function resetaEscritas(diagrama) {
 // -----------------------------------------------------------------------------
 
 function atualizaTabelaEstadoInstrucaoHTML(tabelaInsts) {
-    for(i in tabelaInsts) {
-        var inst = tabelaInsts[i];
-        $(`#i${inst["n"]}_is`).text(inst["is"] ? inst["is"] : "");
-        $(`#i${inst["n"]}_ro`).text(inst["ro"] ? inst["ro"] : "");
-        $(`#i${inst["n"]}_ec`).text(inst["ec"] ? inst["ec"] : "");
-        $(`#i${inst["n"]}_wr`).text(inst["wr"] ? inst["wr"] : "");
+    for(let i in tabelaInsts) {
+        const inst = tabelaInsts[i];
+        $(`#i${inst["posicao"]}_is`).text(inst["issue"] ? inst["issue"] : "");
+        $(`#i${inst["posicao"]}_ec`).text(inst["exeCompleta"] ? inst["exeCompleta"] : "");
+        $(`#i${inst["posicao"]}_wr`).text(inst["write"] ? inst["write"] : "");
     }
 }
 
 function atualizaTabelaEstadoUFHTML(ufs) {
-    for(i in ufs) {
-        var uf = ufs[i];
+    for(let i in ufs) {
+        const uf = ufs[i];
         $(`#${uf["nome"]}_tempo`).text((uf["tempo"] !== null) ? uf["tempo"] : "");
         $(`#${uf["nome"]}_ocupado`).text((uf["ocupado"]) ? "sim" : "não");
         $(`#${uf["nome"]}_operacao`).text(uf["operacao"] ? uf["operacao"] : "");
@@ -419,8 +418,9 @@ function gerarTabelaEstadoUFMem(diagrama) {
 }
 
 function atualizaTabelaEstadoUFMemHTML(ufsMem) {
-    for(i in ufsMem) {
-        var ufMem = ufsMem[i];
+    for(let key in ufsMem) {
+        const ufMem = ufsMem[key];
+        console.log('QQQQ', ufMem);
         $(`#${ufMem["nome"]}_tempo`).text((ufMem["tempo"] !== null) ? ufMem["tempo"] : "");
         $(`#${ufMem["nome"]}_ocupado`).text((ufMem["ocupado"]) ? "sim" : "não");
         $(`#${ufMem["nome"]}_operacao`).text(ufMem["operacao"] ? ufMem["operacao"] : "");
@@ -595,6 +595,11 @@ $(document).ready(function() {
         }
         // terminou = avancaCiclo(diagrama);
         terminou = diagrama.executa_ciclo();
+        atualizaTabelaEstadoInstrucaoHTML(diagrama.estadoInstrucoes);
+        atualizaTabelaEstadoUFMemHTML(diagrama.unidadesFuncionaisMemoria);
+        atualizaTabelaEstadoUFHTML(diagrama.unidadesFuncionais);
+        atualizaTabelaEstadoMenHTML(diagrama.estacaoRegistradores);
+        atualizaClock(diagrama.clock);
 
     });
     $("#resultado").click(function() {
@@ -606,5 +611,10 @@ $(document).ready(function() {
             terminou = diagrama.executa_ciclo();
             // terminou = avancaCiclo(diagrama);
         }
+        atualizaTabelaEstadoInstrucaoHTML(diagrama.estadoInstrucoes);
+        atualizaTabelaEstadoUFMemHTML(diagrama.unidadesFuncionaisMemoria);
+        atualizaTabelaEstadoUFHTML(diagrama.unidadesFuncionais);
+        atualizaTabelaEstadoMenHTML(diagrama.estacaoRegistradores);
+        atualizaClock(diagrama.clock);
     });
 });
