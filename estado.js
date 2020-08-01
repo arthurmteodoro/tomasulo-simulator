@@ -346,7 +346,7 @@ export default class Estado {
                 qtdInstrucaoNaoTerminada++;
         }
 
-        return qtdInstrucaoNaoTerminada > 0 ? true : false;
+        return qtdInstrucaoNaoTerminada > 0 ? false : true;
     }
     
 
