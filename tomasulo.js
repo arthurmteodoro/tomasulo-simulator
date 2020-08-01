@@ -609,12 +609,11 @@ $(document).ready(function() {
         }
         while(!terminou) {
             terminou = diagrama.executa_ciclo();
-            // terminou = avancaCiclo(diagrama);
+            atualizaTabelaEstadoInstrucaoHTML(diagrama.estadoInstrucoes);
+            atualizaTabelaEstadoUFMemHTML(diagrama.unidadesFuncionaisMemoria);
+            atualizaTabelaEstadoUFHTML(diagrama.unidadesFuncionais);
+            atualizaTabelaEstadoMenHTML(diagrama.estacaoRegistradores);
+            atualizaClock(diagrama.clock);
         }
-        atualizaTabelaEstadoInstrucaoHTML(diagrama.estadoInstrucoes);
-        atualizaTabelaEstadoUFMemHTML(diagrama.unidadesFuncionaisMemoria);
-        atualizaTabelaEstadoUFHTML(diagrama.unidadesFuncionais);
-        atualizaTabelaEstadoMenHTML(diagrama.estacaoRegistradores);
-        atualizaClock(diagrama.clock);
     });
 });

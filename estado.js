@@ -100,7 +100,7 @@ export default class Estado {
                 return 'Mult'
             case 'LD':
                 return 'Load'
-            case 'STORE':
+            case 'SD':
                 return 'Store'
             case 'ADD':
                 return 'Integer'
@@ -150,7 +150,7 @@ export default class Estado {
                 return parseInt(this.configuracao.ciclos['Div']);
             case 'LD':
                 return parseInt(this.configuracao.ciclos['Load']);
-            case 'STORE':
+            case 'SD':
                 return parseInt(this.configuracao.ciclos['Store']);
             case 'ADD':
                 return parseInt(this.configuracao.ciclos['Integer']);
@@ -188,7 +188,7 @@ export default class Estado {
         let reg_j = this.estacaoRegistradores[instrucao.registradorS];
         let reg_k = this.estacaoRegistradores[instrucao.registradorT];
 
-        if (reg_j === null)
+        if (reg_j === null || reg_j === undefined)
             uf.vj = instrucao.registradorS;
         else {
             if ((reg_j in this.unidadesFuncionais) || (reg_j in this.unidadesFuncionaisMemoria))
@@ -197,7 +197,7 @@ export default class Estado {
                 uf.vj = reg_j;
         }
 
-        if (reg_k === null)
+        if (reg_k === null || reg_j === undefined)
             uf.vk = instrucao.registradorT;
         else {
             if ((reg_k in this.unidadesFuncionais) || (reg_k in this.unidadesFuncionaisMemoria))
