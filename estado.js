@@ -285,6 +285,18 @@ export default class Estado {
         ufMem.destino = null;
     }
 
+    desalocaUF(uf) {
+        uf.instrucao = null;
+        uf.estadoInstrucao = null;
+        uf.tempo = null;
+        uf.ocupado = false;
+        uf.operacao = null;
+        uf.vj = null;
+        uf.vk = null;
+        uf.qj = null;
+        uf.qk = null;
+    }
+
     escreveInstrucao() {
         for(let key in this.unidadesFuncionaisMemoria) {
             const ufMem = this.unidadesFuncionaisMemoria[key];
@@ -300,6 +312,24 @@ export default class Estado {
 
                     this.liberaUFEsperandoResultado(ufMem);
                     this.desalocaUFMem(ufMem);
+                }
+            }
+        }
+
+        for(let key in this.unidadesFuncionais) {
+            const uf = this.unidadesFuncionais[key];
+
+            if (uf.ocupado === true) {
+                if (uf.tempo === -1) {
+                    uf.estadoInstrucao.write = this.clock;
+
+                    let valorReg = this.estacaoRegistradores[uf.instrucao.registradorR];
+                    if (valorReg === uf.nome) {
+                        this.estacaoRegistradores[uf.instrucao.registradorR] = 'VAL(' + uf.nome + ')';
+                    }
+
+                    this.liberaUFEsperandoResultado(uf);
+                    this.desalocaUF(uf);
                 }
             }
         }
