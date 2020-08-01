@@ -336,6 +336,18 @@ export default class Estado {
             }
         }
     }
+
+    verificaSeJaTerminou() {
+        let qtdInstrucaoNaoTerminada = 0;
+        for (let i = 0; i < this.estadoInstrucoes.length; i++) {
+            const element = this.estadoInstrucoes[i];
+            
+            if (element.write === null)
+                qtdInstrucaoNaoTerminada++;
+        }
+
+        return qtdInstrucaoNaoTerminada > 0 ? true : false;
+    }
     
 
     executa_ciclo() {
@@ -356,6 +368,8 @@ export default class Estado {
 
         console.log('Estado registradores:');
         console.log(JSON.stringify(this.estacaoRegistradores, null, 2));
+
+        return this.verificaSeJaTerminou();
     }
 
 
