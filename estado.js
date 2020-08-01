@@ -258,7 +258,9 @@ export default class Estado {
             const ufOlhando = this.unidadesFuncionais[keyUF];
             
             console.log(ufOlhando);
-            if (ufOlhando.ocupado === true) {
+            if ((ufOlhando.ocupado === true) && 
+               ((ufOlhando.qj === UF.nome) || 
+               (ufOlhando.qk === UF.nome))) {
                 if (ufOlhando.qj === UF.nome) {
                     ufOlhando.vj = 'VAL(' + UF.nome + ')';
                     ufOlhando.qj = null;
