@@ -62,6 +62,7 @@ export default class Estado {
                 let nome = tipoUnidade + (i+1);
                 unidadeFuncionalMemoria["nome"] = nome;
                 unidadeFuncionalMemoria["ocupado"] = false;
+                unidadeFuncionalMemoria["UF"] = null;
                 
                 unidadeFuncionalMemoria["operacao"] = null;
                 unidadeFuncionalMemoria["endereco"] = null;
@@ -168,10 +169,22 @@ export default class Estado {
         uf.estadoInstrucao = estadoInstrucao;
         uf.tempo = this.getCiclos(instrucao) + 1;
         uf.ocupado = true;
-        uf.operacao = 'Load';
         uf.operacao = instrucao.operacao;
         uf.endereco = instrucao.registradorS + '+' + instrucao.registradorT;
         uf.destino = instrucao.registradorR;
+
+        if (uf.operacao === 'LD') {
+            uf.operacao = 'Load';
+            uf.UF = null;
+        } else {
+            uf.operacao = 'Load';
+
+            let UFQueTemQueEsperar = this.estacaoRegistradores[instrucao.registradorR];
+            if (UFQueTemQueEsperar !== null)
+                uf.UF = UFQueTemQueEsperar;
+            else
+                uf.UF = null;
+        }
     }
 
     escreveEstacaoRegistrador(instrucao, ufNome) {
@@ -221,7 +234,8 @@ export default class Estado {
                 else
                     this.alocaFU(UFParaUsar, novaInstrucao.instrucao, novaInstrucao);
                 novaInstrucao.issue = this.clock;
-                this.escreveEstacaoRegistrador(novaInstrucao.instrucao, UFParaUsar.nome);
+                if (UFParaUsar.tipoUnidade !== 'Store')
+                    this.escreveEstacaoRegistrador(novaInstrucao.instrucao, UFParaUsar.nome);
             }
         }
     }
@@ -230,7 +244,7 @@ export default class Estado {
         for(let key in this.unidadesFuncionaisMemoria) {
             var ufMem = this.unidadesFuncionaisMemoria[key];
 
-            if (ufMem.ocupado === true) {
+            if ((ufMem.ocupado === true) && (ufMem.UF === null)) {
                 ufMem.tempo = ufMem.tempo - 1;
 
                 if (ufMem.tempo === 0) {
@@ -272,6 +286,17 @@ export default class Estado {
 
                 if ((ufOlhando.qj === null) && (ufOlhando.qk === null)) {
                     ufOlhando.tempo = ufOlhando.tempo - 1; // subtrai 1 pq tira aquele valor q tava sobrando quando foi colocado
+                }
+            }
+        }
+
+        for(let keyUF in this.unidadesFuncionaisMemoria) {
+            const ufOlhando = this.unidadesFuncionaisMemoria[keyUF];
+            
+            if (ufOlhando.ocupado === true) {
+                if (ufOlhando.UF === UF.nome) {
+                    ufOlhando.UF = null;
+                    ufOlhando.tempo = ufOlhando.tempo - 1;
                 }
             }
         }
