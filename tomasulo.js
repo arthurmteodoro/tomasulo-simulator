@@ -593,8 +593,8 @@ $(document).ready(function() {
             alert("Todas as instruções estão completadas.");
             return;
         }
-        terminou = avancaCiclo(diagrama);
-        diagrama.executa_ciclo();
+        // terminou = avancaCiclo(diagrama);
+        terminou = diagrama.executa_ciclo();
 
     });
     $("#resultado").click(function() {
@@ -603,7 +603,8 @@ $(document).ready(function() {
             return;
         }
         while(!terminou) {
-            terminou = avancaCiclo(diagrama);
+            terminou = diagrama.executa_ciclo();
+            // terminou = avancaCiclo(diagrama);
         }
     });
 });
