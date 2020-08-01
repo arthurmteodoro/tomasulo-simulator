@@ -190,35 +190,40 @@ export default class Estado {
 
         if (reg_j === null)
             uf.vj = instrucao.registradorS;
+        else {
+            if ((reg_j in this.unidadesFuncionais) || (reg_j in this.unidadesFuncionaisMemoria))
+                uf.qj = reg_j;
+            else
+                uf.vj = reg_j;
+        }
+
         if (reg_k === null)
             uf.vk = instrucao.registradorT;
-
-        if ((reg_j in this.unidadesFuncionais) || (reg_j in this.unidadesFuncionaisMemoria))
-            uf.qj = reg_j;
-        else
-            uf.vj = reg_j;
-
-        if ((reg_k in this.unidadesFuncionais) || (reg_k in this.unidadesFuncionaisMemoria))
-            uf.qk = reg_k;
-        else
-            uf.vk = reg_k;
+        else {
+            if ((reg_k in this.unidadesFuncionais) || (reg_k in this.unidadesFuncionaisMemoria))
+                uf.qk = reg_k;
+            else
+                uf.vk = reg_k;
+        }
     }
 
     issueNovaInstrucao() {
         let novaInstrucao = this.getNovaInstrucao();
         console.log(novaInstrucao);
 
-        let ufInstrucao = this.verificaUFInstrucao(novaInstrucao.instrucao);
-        let UFParaUsar = this.getFUVazia(ufInstrucao);
-        
-        if (UFParaUsar) {
-            if ((UFParaUsar.tipoUnidade == 'Load') || (UFParaUsar.tipoUnidade == 'Store'))
-                this.alocaFuMem(UFParaUsar, novaInstrucao.instrucao, novaInstrucao);
-            else
-                this.alocaFU(UFParaUsar, novaInstrucao.instrucao, novaInstrucao);
-            novaInstrucao.issue = this.clock;
-            this.escreveEstacaoRegistrador(novaInstrucao.instrucao, UFParaUsar.nome);
-        }  
+        if (novaInstrucao) {
+            let ufInstrucao = this.verificaUFInstrucao(novaInstrucao.instrucao);
+            let UFParaUsar = this.getFUVazia(ufInstrucao);
+            
+            if (UFParaUsar) {
+                if ((UFParaUsar.tipoUnidade == 'Load') || (UFParaUsar.tipoUnidade == 'Store'))
+                    this.alocaFuMem(UFParaUsar, novaInstrucao.instrucao, novaInstrucao);
+                else
+                    this.alocaFU(UFParaUsar, novaInstrucao.instrucao, novaInstrucao);
+                novaInstrucao.issue = this.clock;
+                this.escreveEstacaoRegistrador(novaInstrucao.instrucao, UFParaUsar.nome);
+            }
+        }
     }
 
     executaInstrucao() {
