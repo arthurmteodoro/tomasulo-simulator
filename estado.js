@@ -78,6 +78,9 @@ export default class Estado {
         for(let i = 0; i < 32; i += 2) {
             this.estacaoRegistradores["F" + i] = null;
         }
+        for(let i = 0; i < 32; i += 2) {
+            this.estacaoRegistradores["R" + i] = null;
+        }
     }
 
     getNovaInstrucao() {
@@ -177,7 +180,7 @@ export default class Estado {
             uf.operacao = 'Load';
             uf.UF = null;
         } else {
-            uf.operacao = 'Load';
+            uf.operacao = 'Store';
 
             let UFQueTemQueEsperar = this.estacaoRegistradores[instrucao.registradorR];
             if (UFQueTemQueEsperar !== null)
