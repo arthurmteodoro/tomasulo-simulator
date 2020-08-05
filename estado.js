@@ -62,7 +62,7 @@ export default class Estado {
                 let nome = tipoUnidade + (i+1);
                 unidadeFuncionalMemoria["nome"] = nome;
                 unidadeFuncionalMemoria["ocupado"] = false;
-                unidadeFuncionalMemoria["UF"] = null;
+                unidadeFuncionalMemoria["qi"] = null;
                 
                 unidadeFuncionalMemoria["operacao"] = null;
                 unidadeFuncionalMemoria["endereco"] = null;
@@ -175,18 +175,14 @@ export default class Estado {
         uf.operacao = instrucao.operacao;
         uf.endereco = instrucao.registradorS + '+' + instrucao.registradorT;
         uf.destino = instrucao.registradorR;
+        uf.qi = null;
 
-        if (uf.operacao === 'LD') {
-            uf.operacao = 'Load';
-            uf.UF = null;
-        } else {
-            uf.operacao = 'Store';
-
+        if (instrucao.operacao === 'SD') {
             let UFQueTemQueEsperar = this.estacaoRegistradores[instrucao.registradorR];
             if (UFQueTemQueEsperar !== null)
-                uf.UF = UFQueTemQueEsperar;
+                uf.qi = UFQueTemQueEsperar;
             else
-                uf.UF = null;
+                uf.qi = null;
         }
     }
 
@@ -263,7 +259,7 @@ export default class Estado {
         for(let key in this.unidadesFuncionaisMemoria) {
             var ufMem = this.unidadesFuncionaisMemoria[key];
 
-            if ((ufMem.ocupado === true) && (ufMem.UF === null)) {
+            if ((ufMem.ocupado === true) && (ufMem.qi === null)) {
                 ufMem.tempo = ufMem.tempo - 1;
 
                 if (ufMem.tempo === 0) {
@@ -313,8 +309,8 @@ export default class Estado {
             const ufOlhando = this.unidadesFuncionaisMemoria[keyUF];
             
             if (ufOlhando.ocupado === true) {
-                if (ufOlhando.UF === UF.nome) {
-                    ufOlhando.UF = null;
+                if (ufOlhando.qi === UF.nome) {
+                    ufOlhando.qi = null;
                     ufOlhando.tempo = ufOlhando.tempo - 1;
                 }
             }
@@ -329,6 +325,7 @@ export default class Estado {
         ufMem.operacao = null;
         ufMem.endereco = null;
         ufMem.destino = null;
+        ufMem.qi = null;
     }
 
     desalocaUF(uf) {
