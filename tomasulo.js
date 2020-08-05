@@ -315,7 +315,6 @@ function atualizaTabelaEstadoUFHTML(ufs) {
         $(`#${uf["nome"]}_tempo`).text((uf["tempo"] !== null) ? uf["tempo"] : "");
         $(`#${uf["nome"]}_ocupado`).text((uf["ocupado"]) ? "sim" : "não");
         $(`#${uf["nome"]}_operacao`).text(uf["operacao"] ? uf["operacao"] : "");
-        $(`#${uf["nome"]}_vi`).text(uf["vi"] ? uf["vi"] : "");
         $(`#${uf["nome"]}_vj`).text(uf["vj"] ? uf["vj"] : "");
         $(`#${uf["nome"]}_vk`).text(uf["vk"] ? uf["vk"] : "");
         $(`#${uf["nome"]}_qj`).text(((uf["qj"]) && (uf["qj"] !== 1)) ? uf["qj"] : "");
@@ -338,7 +337,7 @@ function atualizaClock(clock) {
 
 function gerarTabelaEstadoInstrucaoHTML(diagrama) {
     var s = (
-        "<h3>Estado das instruções</h3><table class='result'>"
+        "<h3>Status das instruções</h3><table class='result'>"
         + "<tr><th></th><th>Instrução</th><th>i</th><th>j</th>"
         + "<th>k</th><th>Issue</th><th>Exec.<br>Completa</th><th>Write</th></tr>"
     );
@@ -359,8 +358,8 @@ function gerarTabelaEstadoInstrucaoHTML(diagrama) {
 
 function gerarTabelaEstadoUFHTML(diagrama) {
     var s = (
-        "<h3>Estado das UF</h3><table class='result'><tr> <th>Tempo</th> <th>UF</th> <th>Ocupado</th>"
-        + "<th>Op</th> <th>Vi</th> <th>Vj</th> <th>Vk</th> <th>Qj</th> <th>Qk</th>"
+        "<h3>Reservations Stations</h3><table class='result'><tr> <th>Tempo</th> <th>UF</th> <th>Ocupado</th>"
+        + "<th>Op</th> <th>Vj</th> <th>Vk</th> <th>Qj</th> <th>Qk</th>"
     );
 
     console.log(diagrama.unidadesFuncionais);
@@ -370,7 +369,7 @@ function gerarTabelaEstadoUFHTML(diagrama) {
 
         s += `<tr><td id="${uf["nome"]}_tempo"></td>
              <td>${uf["nome"]}</td> <td id="${uf["nome"]}_ocupado"></td>
-             <td id="${uf["nome"]}_operacao"></td><td id="${uf["nome"]}_vi"></td>
+             <td id="${uf["nome"]}_operacao"></td>
              <td id="${uf["nome"]}_vj"></td> <td id="${uf["nome"]}_vk"></td>
              <td id="${uf["nome"]}_qj"></td> <td id="${uf["nome"]}_qk"></td>
              `
@@ -381,7 +380,7 @@ function gerarTabelaEstadoUFHTML(diagrama) {
 }
 
 function gerarTabelaEstadoMenHTML(diagrama) {
-    var s = `<h3>Estado da Memória</h3> <table class="result">`;
+    var s = `<h3>Status dos registradores</h3> <table class="result">`;
 
     for(var i = 0; i < 2; ++i) {
         s += `<tr>`
@@ -401,7 +400,7 @@ function gerarTabelaEstadoMenHTML(diagrama) {
 
 function gerarTabelaEstadoUFMem(diagrama) {
     var s = (
-        "<h3>Estado das Instruções de Memória </h3><table class='result'>"
+        "<h3>Reservations Stations Load/Store</h3><table class='result'>"
         + "<tr><th>Tempo</th><th>Instrução</th><th>Ocupado</th><th>Endereço</th>"
         + "<th>Destino</th>"
     );
