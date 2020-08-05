@@ -63,6 +63,7 @@ export default class Estado {
                 unidadeFuncionalMemoria["nome"] = nome;
                 unidadeFuncionalMemoria["ocupado"] = false;
                 unidadeFuncionalMemoria["qi"] = null;
+                unidadeFuncionalMemoria["qj"] = null;
                 
                 unidadeFuncionalMemoria["operacao"] = null;
                 unidadeFuncionalMemoria["endereco"] = null;
@@ -184,6 +185,12 @@ export default class Estado {
             else
                 uf.qi = null;
         }
+
+        let UFintQueTemQueEsperar = this.estacaoRegistradores[instrucao.registradorT];
+        if (UFintQueTemQueEsperar !== null)
+            uf.qj = UFintQueTemQueEsperar;
+        else
+            uf.qj = null;
     }
 
     escreveEstacaoRegistrador(instrucao, ufNome) {
@@ -259,7 +266,7 @@ export default class Estado {
         for(let key in this.unidadesFuncionaisMemoria) {
             var ufMem = this.unidadesFuncionaisMemoria[key];
 
-            if ((ufMem.ocupado === true) && (ufMem.qi === null)) {
+            if ((ufMem.ocupado === true) && (ufMem.qi === null) && (ufMem.qj === null)) {
                 ufMem.tempo = ufMem.tempo - 1;
 
                 if (ufMem.tempo === 0) {
@@ -286,7 +293,6 @@ export default class Estado {
         for(let keyUF in this.unidadesFuncionais) {
             const ufOlhando = this.unidadesFuncionais[keyUF];
             
-            console.log(ufOlhando);
             if ((ufOlhando.ocupado === true) && 
                ((ufOlhando.qj === UF.nome) || 
                (ufOlhando.qk === UF.nome))) {
@@ -311,6 +317,9 @@ export default class Estado {
             if (ufOlhando.ocupado === true) {
                 if (ufOlhando.qi === UF.nome) {
                     ufOlhando.qi = null;
+                    ufOlhando.tempo = ufOlhando.tempo - 1;
+                } else if (ufOlhando.qj === UF.nome) {
+                    ufOlhando.qj = null;
                     ufOlhando.tempo = ufOlhando.tempo - 1;
                 }
             }
