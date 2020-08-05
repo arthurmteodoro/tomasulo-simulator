@@ -79,7 +79,7 @@ export default class Estado {
         for(let i = 0; i < 32; i += 2) {
             this.estacaoRegistradores["F" + i] = null;
         }
-        for(let i = 0; i < 32; i += 2) {
+        for(let i = 0; i < 32; i += 1) {
             this.estacaoRegistradores["R" + i] = null;
         }
     }
@@ -177,17 +177,18 @@ export default class Estado {
         uf.endereco = instrucao.registradorS + '+' + instrucao.registradorT;
         uf.destino = instrucao.registradorR;
         uf.qi = null;
+        uf.qj = null;
 
         if (instrucao.operacao === 'SD') {
             let UFQueTemQueEsperar = this.estacaoRegistradores[instrucao.registradorR];
-            if (UFQueTemQueEsperar !== null)
+            if ((UFQueTemQueEsperar in this.unidadesFuncionais) || (UFQueTemQueEsperar in this.unidadesFuncionaisMemoria))
                 uf.qi = UFQueTemQueEsperar;
             else
                 uf.qi = null;
         }
 
         let UFintQueTemQueEsperar = this.estacaoRegistradores[instrucao.registradorT];
-        if (UFintQueTemQueEsperar !== null)
+        if ((UFintQueTemQueEsperar in this.unidadesFuncionais) || (UFintQueTemQueEsperar in this.unidadesFuncionaisMemoria))
             uf.qj = UFintQueTemQueEsperar;
         else
             uf.qj = null;
