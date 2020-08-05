@@ -201,11 +201,27 @@ export default class Estado {
         uf.ocupado = true;
         uf.operacao = instrucao.operacao;
 
-        let reg_j = this.estacaoRegistradores[instrucao.registradorS];
-        let reg_k = this.estacaoRegistradores[instrucao.registradorT];
+        let reg_j;
+        let reg_k;
+        let reg_j_inst;
+        let reg_k_inst;
+
+        if ((instrucao.operacao === 'BNEZ') || (instrucao.operacao === 'BEQ')) {
+            reg_j = this.estacaoRegistradores[instrucao.registradorR];
+            reg_k = this.estacaoRegistradores[instrucao.registradorS];
+
+            reg_j_inst = instrucao.registradorR;
+            reg_k_inst = instrucao.registradorS;
+        } else {
+            reg_j = this.estacaoRegistradores[instrucao.registradorS];
+            reg_k = this.estacaoRegistradores[instrucao.registradorT];
+
+            reg_j_inst = instrucao.registradorS;
+            reg_k_inst = instrucao.registradorT;
+        }
 
         if (reg_j === null || reg_j === undefined)
-            uf.vj = instrucao.registradorS;
+            uf.vj = reg_j_inst;
         else {
             if ((reg_j in this.unidadesFuncionais) || (reg_j in this.unidadesFuncionaisMemoria))
                 uf.qj = reg_j;
@@ -213,8 +229,8 @@ export default class Estado {
                 uf.vj = reg_j;
         }
 
-        if (reg_k === null || reg_j === undefined)
-            uf.vk = instrucao.registradorT;
+        if (reg_k === null || reg_k === undefined)
+            uf.vk = reg_k_inst;
         else {
             if ((reg_k in this.unidadesFuncionais) || (reg_k in this.unidadesFuncionaisMemoria))
                 uf.qk = reg_k;
@@ -237,7 +253,7 @@ export default class Estado {
                 else
                     this.alocaFU(UFParaUsar, novaInstrucao.instrucao, novaInstrucao);
                 novaInstrucao.issue = this.clock;
-                if (UFParaUsar.tipoUnidade !== 'Store')
+                if ((UFParaUsar.tipoUnidade !== 'Store') && (UFParaUsar.operacao !== 'BEQ') && (UFParaUsar.operacao !== 'BEQ'))
                     this.escreveEstacaoRegistrador(novaInstrucao.instrucao, UFParaUsar.nome);
             }
         }

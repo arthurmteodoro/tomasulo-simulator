@@ -10,7 +10,7 @@
             "fuLoad": 1,
             "fuStore": 1,
             "fuInt": 3,
-            "fuFPAdd": 2,
+            "fuFPAdd": 3,
             "fuFPMul": 2,
             "fuFPDiv": 1
         }
@@ -41,10 +41,10 @@
             "T": "-8"
         },
         {
-            "D": "BNEZ",
+            "D": "BEQ",
             "R": "R1",
-            "S": "Loop",
-            "T": " "
+            "S": "R2",
+            "T": "LOOP"
         }
     ]
 }

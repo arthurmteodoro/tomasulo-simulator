@@ -9,8 +9,8 @@
         "unidades": {
             "fuLoad": 2,
             "fuStore": 1,
-            "fuInt": 2,
-            "fuFPAdd": 1,
+            "fuInt": 3,
+            "fuFPAdd": 3,
             "fuFPMul": 2,
             "fuFPDiv": 1
         }
