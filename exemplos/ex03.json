@@ -7,12 +7,11 @@
             "ciclosFPDiv": 15
         },
         "unidades": {
-            "fuLoad": 2,
-            "fuStore": 1,
-            "fuInt": 2,
-            "fuFPAdd": 2,
-            "fuFPMul": 1,
-            "fuFPDiv": 1
+            "fuLoad": 6,
+            "fuStore": 3,
+            "fuInt": 3,
+            "fuFPAdd": 3,
+            "fuFPMul": 2
         }
     },
 

@@ -522,7 +522,6 @@ function limparCampos() {
     $("#fuInt").val(1);
     $("#fuFPAdd").val(1);
     $("#fuFPMul").val(1);
-    $("#fuFPDiv").val(1);
 
     $("#clock").html("");
     $("#estadoInst").html("");

@@ -11,8 +11,7 @@
             "fuStore": 1,
             "fuInt": 2,
             "fuFPAdd": 2,
-            "fuFPMul": 1,
-            "fuFPDiv": 1
+            "fuFPMul": 1
         }
     },
 
