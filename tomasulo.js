@@ -201,103 +201,6 @@ function getUnidadeInstrucao(instrucao) {
     }
 }
 
-function temEscrita(comando) {
-    switch (comando) {
-        case "SD":
-        case "BEQ":
-        case "BNEZ":
-            return false;
-        default:
-            return true;
-    }
-}
-
-function destinoEhPontoFlutuante(item) {
-    if(item[0] == "F") {
-        return true;
-    }
-    return false;
-
-}
-
-function ehRegistrador(item) {
-    if(item[0] == 'R' || item[0] == 'F') {
-        return true;
-    }
-    return false;
-}
-
-
-function inicializaDiagrama(CONFIG, insts) {
-
-}
-
-function decrementaUnidadeFuncional(diagrama) {
-    
-}
-
-function ninguemTemQueLerAntes(unidade, unidades, diagrama) {
-    
-}
-
-function atualizaUnidades(unidade, unidades) {
-    
-}
-
-
-function escreveDestino(diagrama) {
-
-}
-
-function leOperandos(diagrama) {
-
-}
-
-
-function avancaCiclo(diagrama) {
-    
-}
-
-function despachaInst(diagrama) {
-
-}
-
-function resetaEscritas(diagrama) {
-    for(key in diagrama["uf"]) {
-        unidade = diagrama["uf"][key];
-        if(unidade["escrevendo"] && unidade["travou"]) {
-            atualizaUnidades(unidade, diagrama["uf"])
-            diagrama["destino"][unidade["vi"]] = null;
-            unidade["travou"] = false;
-            unidade["escrevendo"] = false;
-            unidade["instrucao"] = null;
-            unidade["operacao"] = null;
-            unidade["vi"] = null;
-            unidade["vj"] = null;
-            unidade["vk"] = null;
-            unidade["qj"] = null;
-            unidade["qk"] = null;
-            unidade["rj"] = false;
-            unidade["rk"] = false;
-        }
-    }
-    for(key in diagrama["ufMem"]) {
-        unidade = diagrama["ufMem"][key];
-        if(unidade["escrevendo"] && unidade["travou"]) {
-            atualizaUnidades(unidade, diagrama["ufMem"])
-            ufMem["instrucao"] = null;
-            ufMem["tipo"] = null;
-            ufMem["tempo"] = null;
-            ufMem["nome"] = null;
-            ufMem["ocupado"] = false;
-            ufMem["operacao"] = null;
-            ufMem["endereco"] = null;
-            ufMem["destino"] = null;
-            ufsMem[ufMem["nome"]] = null;
-        }
-    }
-}
-
 // -----------------------------------------------------------------------------
 
 function atualizaTabelaEstadoInstrucaoHTML(tabelaInsts) {
@@ -525,6 +428,7 @@ function limparCampos() {
 
     $("#clock").html("");
     $("#estadoInst").html("");
+    $("#estadoMemUF").html("");
     $("#estadoUF").html("");
     $("#estadoMem").html("");
 }
