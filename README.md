@@ -1,5 +1,6 @@
-# tomasulo-simulator
-Simulador do algoritmo de Tomasulo desenvolvido em JavaScript
+# Simulador Tomasulo
+Simulador do algoritmo de Tomasulo desenvolvido em JavaScript.
+Interface baseada em: [k4t0mono/scoreboarding](https://github.com/k4t0mono/scoreboarding).
 
 ## Desenvolvedores
 - Arthur Teodoro ([arthurmteodoro](https://github.com/arthurmteodoro/))
@@ -11,7 +12,7 @@ Simulador do algoritmo de Tomasulo desenvolvido em JavaScript
 
 ## Instalação
 
-Em nosso guia de instalação utilizamos o Node Package Manager (npm). Para instála-lo no Ubuntu basta instalar o NodeJS. Este [tutorial](https://www.geeksforgeeks.org/installation-of-node-js-on-linux/)) pode auxiliar na obtenção do NodeJS.
+Em nosso guia de utilizamos o Node Package Manager (npm) e o sistema operacional Ubuntu. Para instalar o npm no Ubuntu basta instalar o NodeJS. Este [tutorial](https://www.geeksforgeeks.org/installation-of-node-js-on-linux/)) pode auxiliar na instalação do NodeJS.
 
 Após a instalação do NodeJS utilize o comando abaixo:
 
